@@ -1,0 +1,23 @@
+package main
+
+import "testing"
+
+func TestNewCommand(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected [12]byte
+		fails    bool
+	}{
+		{input: "test", expected: [12]byte{0x74, 0x65, 0x73, 0x74, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, fails: false},
+	}
+
+	for _, test := range tests {
+		t.Run(test.input, func(tt *testing.T) {
+			actual := newCommand(test.input)
+
+			if actual != test.expected {
+				t.Errorf("expected %x, got %x", test.expected, actual)
+			}
+		})
+	}
+}
