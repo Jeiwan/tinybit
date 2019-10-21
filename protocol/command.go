@@ -1,4 +1,4 @@
-package main
+package protocol
 
 import "github.com/sirupsen/logrus"
 

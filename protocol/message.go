@@ -1,4 +1,4 @@
-package main
+package protocol
 
 import (
 	"bytes"
@@ -22,20 +22,23 @@ var (
 	}
 )
 
-type messagePayload interface {
-	serialize() ([]byte, error)
+// MessagePayload ...
+type MessagePayload interface {
+	Serialize() ([]byte, error)
 }
 
-type message struct {
-	magic    [magicLength]byte
-	command  [commandLength]byte
-	length   uint32
-	checksum [checksumLength]byte
-	payload  []byte
+// Message ...
+type Message struct {
+	Magic    [magicLength]byte
+	Command  [commandLength]byte
+	Length   uint32
+	Checksum [checksumLength]byte
+	Payload  []byte
 }
 
-func newMessage(cmd, network string, payload messagePayload) (*message, error) {
-	serializedPayload, err := payload.serialize()
+// NewMessage ...
+func NewMessage(cmd, network string, payload MessagePayload) (*Message, error) {
+	serializedPayload, err := payload.Serialize()
 	if err != nil {
 		return nil, err
 	}
@@ -50,56 +53,59 @@ func newMessage(cmd, network string, payload messagePayload) (*message, error) {
 		return nil, fmt.Errorf("unsupported network %s", network)
 	}
 
-	msg := message{
-		magic:    magic,
-		command:  command,
-		length:   uint32(len(serializedPayload)),
-		checksum: checksum(serializedPayload),
-		payload:  serializedPayload,
+	msg := Message{
+		Magic:    magic,
+		Command:  command,
+		Length:   uint32(len(serializedPayload)),
+		Checksum: checksum(serializedPayload),
+		Payload:  serializedPayload,
 	}
 
 	return &msg, nil
 }
 
-type varStr struct {
+// VarStr ...
+type VarStr struct {
 	Length uint8
 	String string
 }
 
-func newVarStr(str string) varStr {
-	return varStr{
+func newVarStr(str string) VarStr {
+	return VarStr{
 		Length: uint8(len(str)), // TODO: implement var_int
 		String: str,
 	}
 }
 
-func (m message) serialize() ([]byte, error) {
+// Serialize ...
+func (m Message) Serialize() ([]byte, error) {
 	var buf bytes.Buffer
 
-	if err := binary.Write(&buf, binary.LittleEndian, m.magic); err != nil {
+	if err := binary.Write(&buf, binary.LittleEndian, m.Magic); err != nil {
 		return nil, err
 	}
 
-	if err := binary.Write(&buf, binary.LittleEndian, m.command); err != nil {
+	if err := binary.Write(&buf, binary.LittleEndian, m.Command); err != nil {
 		return nil, err
 	}
 
-	if err := binary.Write(&buf, binary.LittleEndian, m.length); err != nil {
+	if err := binary.Write(&buf, binary.LittleEndian, m.Length); err != nil {
 		return nil, err
 	}
 
-	if err := binary.Write(&buf, binary.LittleEndian, m.checksum); err != nil {
+	if err := binary.Write(&buf, binary.LittleEndian, m.Checksum); err != nil {
 		return nil, err
 	}
 
-	if err := binary.Write(&buf, binary.LittleEndian, m.payload); err != nil {
+	if err := binary.Write(&buf, binary.LittleEndian, m.Payload); err != nil {
 		return nil, err
 	}
 
 	return buf.Bytes(), nil
 }
 
-func (v varStr) serialize() ([]byte, error) {
+// Serialize ...
+func (v VarStr) Serialize() ([]byte, error) {
 	var buf bytes.Buffer
 
 	if err := binary.Write(&buf, binary.LittleEndian, v.Length); err != nil {
