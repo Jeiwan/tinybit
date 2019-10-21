@@ -1,4 +1,4 @@
-module github.com/Jeiwan/btcnet
+module github.com/Jeiwan/tinybit
 
 go 1.12
 

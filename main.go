@@ -11,7 +11,7 @@ import (
 
 const (
 	protocolVerion = 70015
-	userAgent      = "/Satoshi:5.64/bitcoin-qt:0.4/"
+	userAgent      = "/Satoshi:5.64/tinybit:0.0.1/"
 )
 
 func main() {
