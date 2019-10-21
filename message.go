@@ -8,12 +8,18 @@ import (
 )
 
 const (
-	nodeNetwork = 1
+	checksumLength = 4
+	nodeNetwork    = 1
+	magicLength    = 4
 )
 
 var (
-	magicMainnet = [4]byte{0xf9, 0xbe, 0xb4, 0xd9}
-	magicSimnet  = [4]byte{0x16, 0x1c, 0x14, 0x12}
+	magicMainnet = [magicLength]byte{0xf9, 0xbe, 0xb4, 0xd9}
+	magicSimnet  = [magicLength]byte{0x16, 0x1c, 0x14, 0x12}
+	networks     = map[string][magicLength]byte{
+		"mainnet": magicMainnet,
+		"simnet":  magicSimnet,
+	}
 )
 
 type messagePayload interface {
@@ -21,10 +27,10 @@ type messagePayload interface {
 }
 
 type message struct {
-	magic    [4]byte
-	command  [12]byte
+	magic    [magicLength]byte
+	command  [commandLength]byte
 	length   uint32
-	checksum [4]byte
+	checksum [checksumLength]byte
 	payload  []byte
 }
 
@@ -39,8 +45,13 @@ func newMessage(cmd, network string, payload messagePayload) (*message, error) {
 		return nil, fmt.Errorf("unsupported command %s", cmd)
 	}
 
+	magic, ok := networks[network]
+	if !ok {
+		return nil, fmt.Errorf("unsupported network %s", network)
+	}
+
 	msg := message{
-		magic:    magicSimnet,
+		magic:    magic,
 		command:  command,
 		length:   uint32(len(serializedPayload)),
 		checksum: checksum(serializedPayload),
@@ -102,12 +113,11 @@ func (v varStr) serialize() ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
-func checksum(data []byte) [4]byte {
+func checksum(data []byte) [checksumLength]byte {
 	hash := sha256.Sum256(data)
 	hash = sha256.Sum256(hash[:])
-	var hashArr [4]byte
-	copy(hashArr[:], hash[0:4])
+	var hashArr [checksumLength]byte
+	copy(hashArr[:], hash[0:checksumLength])
 
 	return hashArr
-
 }

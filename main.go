@@ -26,7 +26,7 @@ func main() {
 		},
 		addrFrom: netAddr{
 			services: nodeNetwork,
-			ip:       newIP(0, 0, 0, 0),
+			ip:       newIP(127, 0, 0, 1),
 			port:     9334,
 		},
 		nonce:       nonce(),
@@ -49,8 +49,6 @@ func main() {
 		logrus.Fatalln(err)
 	}
 	defer conn.Close()
-
-	logrus.Infof("mgs: %x", msgSerialized)
 
 	_, err = conn.Write(msgSerialized)
 	if err != nil {

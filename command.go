@@ -3,25 +3,24 @@ package main
 import "github.com/sirupsen/logrus"
 
 const (
-	cmdPing    = "ping"
-	cmdPong    = "pong"
-	cmdVersion = "version"
+	cmdPing       = "ping"
+	cmdPong       = "pong"
+	cmdVersion    = "version"
+	commandLength = 12
 )
 
-var commands = map[string][12]byte{
-	cmdPing:    newCommand(cmdPing),
-	cmdPong:    newCommand(cmdPong),
+var commands = map[string][commandLength]byte{
 	cmdVersion: newCommand(cmdVersion),
 }
 
-func newCommand(command string) [12]byte {
+func newCommand(command string) [commandLength]byte {
 	l := len(command)
-	if l > 12 {
+	if l > commandLength {
 		logrus.Fatalf("command %s is too long", command)
 	}
 
-	var packed [12]byte
-	buf := make([]byte, 12-l)
+	var packed [commandLength]byte
+	buf := make([]byte, commandLength-l)
 	copy(packed[:], append([]byte(command), buf...)[:])
 
 	return packed
