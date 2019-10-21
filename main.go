@@ -55,8 +55,6 @@ func main() {
 		logrus.Fatalln(err)
 	}
 
-	var responses [][]byte
-
 	doneCh := make(chan struct{})
 	go func() {
 		tmp := make([]byte, 256)
@@ -71,13 +69,10 @@ func main() {
 				return
 			}
 			logrus.Infof("received: %x", tmp[:n])
-			responses = append(responses, tmp[:n])
 		}
 	}()
 
 	<-doneCh
-
-	logrus.Println(responses)
 }
 
 func nonce() uint64 {
