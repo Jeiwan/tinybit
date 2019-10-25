@@ -46,7 +46,7 @@ var tinybitCmd = &cobra.Command{
 			Nonce:       nonce(),
 			UserAgent:   protocol.NewUserAgent(),
 			StartHeight: 0,
-			Relay:       false,
+			Relay:       true,
 		}
 
 		msg, err := protocol.NewMessage("version", network, version)
