@@ -70,24 +70,18 @@ var tinybitCmd = &cobra.Command{
 			logrus.Fatalln(err)
 		}
 
-		doneCh := make(chan struct{})
-		go func() {
-			tmp := make([]byte, 256)
+		tmp := make([]byte, 256)
 
-			for {
-				n, err := conn.Read(tmp)
-				if err != nil {
-					if err != io.EOF {
-						logrus.Fatalln(err)
-					}
-					doneCh <- struct{}{}
-					return
+		for {
+			n, err := conn.Read(tmp)
+			if err != nil {
+				if err != io.EOF {
+					logrus.Fatalln(err)
 				}
-				logrus.Infof("received: %x", tmp[:n])
+				return
 			}
-		}()
-
-		<-doneCh
+			logrus.Infof("received: %x", tmp[:n])
+		}
 	},
 }
 
