@@ -81,11 +81,11 @@ func newVarStr(str string) VarStr {
 func (m Message) Serialize() ([]byte, error) {
 	var buf bytes.Buffer
 
-	if err := binary.Write(&buf, binary.LittleEndian, m.Magic); err != nil {
+	if _, err := buf.Write(m.Magic[:]); err != nil {
 		return nil, err
 	}
 
-	if err := binary.Write(&buf, binary.LittleEndian, m.Command); err != nil {
+	if _, err := buf.Write(m.Command[:]); err != nil {
 		return nil, err
 	}
 
@@ -93,11 +93,11 @@ func (m Message) Serialize() ([]byte, error) {
 		return nil, err
 	}
 
-	if err := binary.Write(&buf, binary.LittleEndian, m.Checksum); err != nil {
+	if _, err := buf.Write(m.Checksum[:]); err != nil {
 		return nil, err
 	}
 
-	if err := binary.Write(&buf, binary.LittleEndian, m.Payload); err != nil {
+	if _, err := buf.Write(m.Payload); err != nil {
 		return nil, err
 	}
 
