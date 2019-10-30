@@ -45,7 +45,7 @@ var tinybitCmd = &cobra.Command{
 			},
 			Nonce:       nonce(),
 			UserAgent:   protocol.NewUserAgent(),
-			StartHeight: 0,
+			StartHeight: -1,
 			Relay:       true,
 		}
 
