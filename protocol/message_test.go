@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/Jeiwan/tinybit/binary"
 	"github.com/Jeiwan/tinybit/protocol"
 )
 
@@ -34,7 +35,7 @@ func TestMessageSerialization(t *testing.T) {
 		return
 	}
 
-	msgSerialized, err := msg.Serialize()
+	msgSerialized, err := binary.Marshal(msg)
 	if err != nil {
 		t.Errorf("unexpected error: %+v", err)
 		return

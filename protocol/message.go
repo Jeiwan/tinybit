@@ -1,10 +1,10 @@
 package protocol
 
 import (
-	"bytes"
 	"crypto/sha256"
-	"encoding/binary"
 	"fmt"
+
+	"github.com/Jeiwan/tinybit/binary"
 )
 
 const (
@@ -22,11 +22,6 @@ var (
 	}
 )
 
-// MessagePayload ...
-type MessagePayload interface {
-	Serialize() ([]byte, error)
-}
-
 // Message ...
 type Message struct {
 	Magic    [magicLength]byte
@@ -37,8 +32,8 @@ type Message struct {
 }
 
 // NewMessage ...
-func NewMessage(cmd, network string, payload MessagePayload) (*Message, error) {
-	serializedPayload, err := payload.Serialize()
+func NewMessage(cmd, network string, payload interface{}) (*Message, error) {
+	serializedPayload, err := binary.Marshal(payload)
 	if err != nil {
 		return nil, err
 	}
@@ -75,48 +70,6 @@ func newVarStr(str string) VarStr {
 		Length: uint8(len(str)), // TODO: implement var_int
 		String: str,
 	}
-}
-
-// Serialize ...
-func (m Message) Serialize() ([]byte, error) {
-	var buf bytes.Buffer
-
-	if _, err := buf.Write(m.Magic[:]); err != nil {
-		return nil, err
-	}
-
-	if _, err := buf.Write(m.Command[:]); err != nil {
-		return nil, err
-	}
-
-	if err := binary.Write(&buf, binary.LittleEndian, m.Length); err != nil {
-		return nil, err
-	}
-
-	if _, err := buf.Write(m.Checksum[:]); err != nil {
-		return nil, err
-	}
-
-	if _, err := buf.Write(m.Payload); err != nil {
-		return nil, err
-	}
-
-	return buf.Bytes(), nil
-}
-
-// Serialize ...
-func (v VarStr) Serialize() ([]byte, error) {
-	var buf bytes.Buffer
-
-	if err := binary.Write(&buf, binary.LittleEndian, v.Length); err != nil {
-		return nil, err
-	}
-
-	if _, err := buf.Write([]byte(v.String)); err != nil {
-		return nil, err
-	}
-
-	return buf.Bytes(), nil
 }
 
 func checksum(data []byte) [checksumLength]byte {

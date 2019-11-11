@@ -7,6 +7,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/Jeiwan/tinybit/binary"
 	"github.com/Jeiwan/tinybit/protocol"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -54,7 +55,7 @@ var tinybitCmd = &cobra.Command{
 			logrus.Fatalln(err)
 		}
 
-		msgSerialized, err := msg.Serialize()
+		msgSerialized, err := binary.Marshal(msg)
 		if err != nil {
 			logrus.Fatalln(err)
 		}
