@@ -63,6 +63,12 @@ func Marshal(v interface{}) ([]byte, error) {
 			return nil, err
 		}
 
+	// VarStr.String
+	case string:
+		if _, err := buf.Write([]byte(v.(string))); err != nil {
+			return nil, err
+		}
+
 	case Marshaler:
 		return v.(Marshaler).MarshalBinary()
 
