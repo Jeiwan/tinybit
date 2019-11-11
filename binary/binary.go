@@ -70,12 +70,28 @@ func Marshal(v interface{}) ([]byte, error) {
 		}
 
 	case Marshaler:
-		return v.(Marshaler).MarshalBinary()
+		b, err := v.(Marshaler).MarshalBinary()
+		if err != nil {
+			return nil, err
+		}
+
+		if _, err := buf.Write(b); err != nil {
+			return nil, err
+		}
 
 	default:
 		// is it a struct?
 		if reflect.ValueOf(v).Kind() == reflect.Struct {
-			return marshalStruct(v)
+			b, err := marshalStruct(v)
+			if err != nil {
+				return nil, err
+			}
+
+			if _, err := buf.Write(b); err != nil {
+				return nil, err
+			}
+
+			break
 		}
 
 		return nil, fmt.Errorf("unsupported type %s", reflect.TypeOf(v).String())
