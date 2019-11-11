@@ -22,7 +22,7 @@ func Marshal(v interface{}) ([]byte, error) {
 	var buf bytes.Buffer
 
 	switch v.(type) {
-	case int32, uint32, int64, uint64, bool:
+	case uint8, int32, uint32, int64, uint64, bool:
 		if err := binary.Write(&buf, binary.LittleEndian, v); err != nil {
 			return nil, err
 		}
