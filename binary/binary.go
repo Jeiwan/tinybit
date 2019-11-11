@@ -21,6 +21,10 @@ type Marshaler interface {
 func Marshal(v interface{}) ([]byte, error) {
 	var buf bytes.Buffer
 
+	if reflect.TypeOf(v).Kind() == reflect.Ptr {
+		v = reflect.ValueOf(v).Elem().Interface()
+	}
+
 	switch v.(type) {
 	case uint8, int32, uint32, int64, uint64, bool:
 		if err := binary.Write(&buf, binary.LittleEndian, v); err != nil {
