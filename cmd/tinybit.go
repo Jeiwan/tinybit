@@ -33,12 +33,12 @@ var tinybitCmd = &cobra.Command{
 			Version:   protocol.Version,
 			Services:  protocol.SrvNodeNetwork,
 			Timestamp: time.Now().UTC().Unix(),
-			AddrRecv: protocol.NetAddr{
+			AddrRecv: protocol.VersionNetAddr{
 				Services: protocol.SrvNodeNetwork,
 				IP:       protocol.NewIPv4(127, 0, 0, 1),
 				Port:     9333,
 			},
-			AddrFrom: protocol.NetAddr{
+			AddrFrom: protocol.VersionNetAddr{
 				Services: protocol.SrvNodeNetwork,
 				IP:       protocol.NewIPv4(127, 0, 0, 1),
 				Port:     9334,

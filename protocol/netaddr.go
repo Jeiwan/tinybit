@@ -8,9 +8,8 @@ import (
 // IPv4 ...
 type IPv4 [4]byte
 
-// NetAddr ...
-type NetAddr struct {
-	Time     uint32
+// VersionNetAddr ...
+type VersionNetAddr struct {
 	Services uint64
 	IP       *IPv4
 	Port     uint16

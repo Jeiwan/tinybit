@@ -13,12 +13,12 @@ func TestMessageSerialization(t *testing.T) {
 		Version:   protocol.Version,
 		Services:  protocol.SrvNodeNetwork,
 		Timestamp: time.Date(2019, 11, 11, 0, 0, 0, 0, time.UTC).Unix(),
-		AddrRecv: protocol.NetAddr{
+		AddrRecv: protocol.VersionNetAddr{
 			Services: protocol.SrvNodeNetwork,
 			IP:       protocol.NewIPv4(127, 0, 0, 1),
 			Port:     9333,
 		},
-		AddrFrom: protocol.NetAddr{
+		AddrFrom: protocol.VersionNetAddr{
 			Services: protocol.SrvNodeNetwork,
 			IP:       protocol.NewIPv4(127, 0, 0, 1),
 			Port:     9334,
