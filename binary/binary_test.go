@@ -21,6 +21,11 @@ func TestMarshal(t *testing.T) {
 		err      error
 		expected []byte
 	}{
+		{name: "uint8",
+			input:    uint8(255),
+			err:      nil,
+			expected: []byte{0xFF}},
+
 		{name: "int32",
 			input:    int32(1337),
 			err:      nil,
@@ -101,8 +106,8 @@ func TestMarshal(t *testing.T) {
 			}{
 				Test:   31337,
 				String: "test"},
-			err:      errors.New("failed to marshal field String: unsupported type string"),
-			expected: []byte{}},
+			err:      nil,
+			expected: []byte{0x69, 0x7a, 0x00, 0x00, 0x74, 0x65, 0x73, 0x74}},
 
 		{name: "custom marshaler",
 			input:    customType{},
@@ -118,10 +123,8 @@ func TestMarshal(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(tt *testing.T) {
 			actual, err := binary.Marshal(test.input)
-			if err != nil && test.err != nil {
-				if test.err.Error() != err.Error() {
-					tt.Errorf("expected error: %v, actual: %v", test.err, err)
-				}
+			if err == nil && test.err != nil {
+				tt.Errorf("expected error: %v, actual: %s", test.err, actual)
 				return
 			}
 
