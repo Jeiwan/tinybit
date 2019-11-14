@@ -2,6 +2,7 @@ package binary_test
 
 import (
 	"bytes"
+	"io"
 	"math"
 	"reflect"
 	"testing"
@@ -10,11 +11,16 @@ import (
 )
 
 type customUnmarshaler struct {
-	Value interface{}
+	Value int
 }
 
-func (u customUnmarshaler) UnmarshalBinary(data []byte) error {
-	u.Value = data
+func (u *customUnmarshaler) UnmarshalBinary(r io.Reader) error {
+	data := make([]byte, 1)
+	if _, err := r.Read(data); err != nil {
+		return err
+	}
+
+	u.Value = int(data[0])
 	return nil
 }
 
@@ -86,6 +92,12 @@ func TestUnmarshal(t *testing.T) {
 			err:      nil,
 			actual:   func() interface{} { var x [12]byte; return &x },
 			expected: [12]byte{0xde, 0xad, 0xbe, 0xef, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
+
+		{name: "Unmarshaler",
+			input:    []byte{0x01, 0x02, 0x03},
+			err:      nil,
+			actual:   func() interface{} { var x customUnmarshaler; return &x },
+			expected: customUnmarshaler{Value: 1}},
 
 		{name: "struct",
 			input: []byte{

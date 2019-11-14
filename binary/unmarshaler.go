@@ -7,6 +7,11 @@ import (
 	"reflect"
 )
 
+// Unmarshaler is the interface implemented by types that can unmarshal themselves from binary.
+type Unmarshaler interface {
+	UnmarshalBinary(r io.Reader) error
+}
+
 // Decoder reads and decodes binary data from an input stream.
 type Decoder struct {
 	r io.Reader
@@ -86,6 +91,12 @@ func (d Decoder) Decode(v interface{}) error {
 
 	case *[commandLength]byte:
 		err := d.decodeArray(commandLength, val)
+		if err != nil {
+			return err
+		}
+
+	case Unmarshaler:
+		err := val.UnmarshalBinary(d.r)
 		if err != nil {
 			return err
 		}
