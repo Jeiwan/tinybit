@@ -14,23 +14,19 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var (
+	network string
+	nodeURL string
+)
+
 func init() {
-	tinybitCmd.Flags().String("node-url", "127.0.0.1:9333", "TCP address of a Bitcoin node to connect to")
-	tinybitCmd.Flags().String("network", "simnet", "Bitcoin network (simnet, mainnet)")
+	tinybitCmd.Flags().StringVar(&nodeURL, "node-url", "127.0.0.1:9333", "TCP address of a Bitcoin node to connect to")
+	tinybitCmd.Flags().StringVar(&network, "network", "simnet", "Bitcoin network (simnet, mainnet)")
 }
 
 var tinybitCmd = &cobra.Command{
 	Use: "tinybit",
 	Run: func(cmd *cobra.Command, args []string) {
-		nodeURL, err := cmd.Flags().GetString("node-url")
-		if err != nil {
-			logrus.Fatalln(err)
-		}
-		network, err := cmd.Flags().GetString("network")
-		if err != nil {
-			logrus.Fatalln(err)
-		}
-
 		version := protocol.MsgVersion{
 			Version:   protocol.Version,
 			Services:  protocol.SrvNodeNetwork,
