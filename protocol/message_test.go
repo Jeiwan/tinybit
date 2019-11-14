@@ -48,3 +48,58 @@ func TestMessageSerialization(t *testing.T) {
 	}
 
 }
+
+func TestHasValidCommand(t *testing.T) {
+	tests := []struct {
+		name     string
+		expected bool
+	}{
+		{"version", true},
+		{"invalid", false},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(tt *testing.T) {
+			var packed [12]byte
+			buf := make([]byte, 12-len(test.name))
+			copy(packed[:], append([]byte(test.name), buf...)[:])
+
+			mh := protocol.MessageHeader{
+				Command: packed,
+			}
+			actual := mh.HasValidCommand()
+
+			if actual != test.expected {
+				t.Errorf("expected: %v, actual: %v", test.expected, actual)
+			}
+		})
+	}
+}
+
+func TestHasValidMagic(t *testing.T) {
+	magicMainnet := [4]byte{0xf9, 0xbe, 0xb4, 0xd9}
+	magicSimnet := [4]byte{0x16, 0x1c, 0x14, 0x12}
+
+	tests := []struct {
+		name     string
+		magic    [4]byte
+		expected bool
+	}{
+		{"mainner", magicMainnet, true},
+		{"simner", magicSimnet, true},
+		{"invalid", [4]byte{0xde, 0xad, 0xbe, 0xef}, false},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(tt *testing.T) {
+			mh := protocol.MessageHeader{
+				Magic: test.magic,
+			}
+			actual := mh.HasValidMagic()
+
+			if actual != test.expected {
+				t.Errorf("expected: %v, actual: %v", test.expected, actual)
+			}
+		})
+	}
+}

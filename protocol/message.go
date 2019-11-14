@@ -66,6 +66,41 @@ func NewMessage(cmd, network string, payload interface{}) (*Message, error) {
 	return &msg, nil
 }
 
+// CommandString returns command as a string with zero bytes removed.
+func (mh MessageHeader) CommandString() string {
+	return strings.Trim(string(mh.Command[:]), string(0x00))
+}
+
+// Validate ...
+func (mh MessageHeader) Validate() error {
+	if !mh.HasValidMagic() {
+		return fmt.Errorf("invalid magic: %x", mh.Magic)
+	}
+
+	if !mh.HasValidCommand() {
+		return fmt.Errorf("invalid command: %+v", mh.CommandString())
+	}
+	return nil
+}
+
+// HasValidCommand returns true if the message header contains a supported command.
+// Returns false otherwise.
+func (mh MessageHeader) HasValidCommand() bool {
+	_, ok := commands[mh.CommandString()]
+	return ok
+}
+
+// HasValidMagic returns true if the message header contains a supported magic.
+// Returns false otherwise.
+func (mh MessageHeader) HasValidMagic() bool {
+	switch mh.Magic {
+	case magicMainnet, magicSimnet:
+		return true
+	}
+
+	return false
+}
+
 // VarStr ...
 type VarStr struct {
 	Length uint8
