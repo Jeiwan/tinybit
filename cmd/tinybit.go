@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bytes"
 	"io"
 	"math/rand"
 	"net"
@@ -71,7 +72,7 @@ var tinybitCmd = &cobra.Command{
 			logrus.Fatalln(err)
 		}
 
-		tmp := make([]byte, 256)
+		tmp := make([]byte, protocol.MsgHeaderLength)
 
 		for {
 			n, err := conn.Read(tmp)
@@ -81,9 +82,43 @@ var tinybitCmd = &cobra.Command{
 				}
 				return
 			}
-			logrus.Infof("received: %x", tmp[:n])
+
+			logrus.Debugf("received: %x", tmp[:n])
+			var msgHeader protocol.MessageHeader
+			if err := binary.NewDecoder(bytes.NewReader(tmp[:n])).Decode(&msgHeader); err != nil {
+				logrus.Errorf("invalid header: %+v", err)
+				continue
+			}
+
+			if err := msgHeader.Validate(); err != nil {
+				logrus.Error(err)
+				continue
+			}
+
+			logrus.Debugf("received message: %s", msgHeader.Command)
+
+			switch msgHeader.CommandString() {
+			case "version":
+				if err := handleVersion(&msgHeader, conn); err != nil {
+					logrus.Errorf("failed to handle 'version': %+v", err)
+					continue
+				}
+			}
 		}
 	},
+}
+
+func handleVersion(header *protocol.MessageHeader, conn io.Reader) error {
+	var version protocol.MsgVersion
+
+	lr := io.LimitReader(conn, int64(header.Length))
+	if err := binary.NewDecoder(lr).Decode(&version); err != nil {
+		return err
+	}
+
+	logrus.Infof("VERSION: %+v", version.UserAgent)
+
+	return nil
 }
 
 func nonce() uint64 {

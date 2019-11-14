@@ -3,6 +3,8 @@ package protocol
 import (
 	"crypto/sha256"
 	"fmt"
+	"io"
+	"strings"
 
 	"github.com/Jeiwan/tinybit/binary"
 )
@@ -11,6 +13,9 @@ const (
 	checksumLength = 4
 	nodeNetwork    = 1
 	magicLength    = 4
+
+	// MsgHeaderLength specifies the length of Message in bytes
+	MsgHeaderLength = magicLength + commandLength + checksumLength + 4 // 4 - payload length value
 )
 
 var (

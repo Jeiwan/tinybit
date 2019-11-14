@@ -1,5 +1,11 @@
 package protocol
 
+import (
+	"errors"
+	"fmt"
+	"io"
+)
+
 // IPv4 ...
 type IPv4 [4]byte
 
