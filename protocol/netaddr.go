@@ -6,13 +6,13 @@ type IPv4 [4]byte
 // VersionNetAddr ...
 type VersionNetAddr struct {
 	Services uint64
-	IP       *IPv4
+	IP       IPv4
 	Port     uint16
 }
 
 // NewIPv4 ...
-func NewIPv4(a, b, c, d uint8) *IPv4 {
-	return &IPv4{a, b, c, d}
+func NewIPv4(a, b, c, d uint8) IPv4 {
+	return IPv4{a, b, c, d}
 }
 
 // MarshalBinary implements the binary.Marshaler interface
