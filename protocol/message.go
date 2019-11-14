@@ -22,13 +22,18 @@ var (
 	}
 )
 
-// Message ...
-type Message struct {
+// MessageHeader ...
+type MessageHeader struct {
 	Magic    [magicLength]byte
 	Command  [commandLength]byte
 	Length   uint32
 	Checksum [checksumLength]byte
-	Payload  []byte
+}
+
+// Message ...
+type Message struct {
+	MessageHeader
+	Payload []byte
 }
 
 // NewMessage ...
@@ -49,11 +54,13 @@ func NewMessage(cmd, network string, payload interface{}) (*Message, error) {
 	}
 
 	msg := Message{
-		Magic:    magic,
-		Command:  command,
-		Length:   uint32(len(serializedPayload)),
-		Checksum: checksum(serializedPayload),
-		Payload:  serializedPayload,
+		MessageHeader: MessageHeader{
+			Magic:    magic,
+			Command:  command,
+			Length:   uint32(len(serializedPayload)),
+			Checksum: checksum(serializedPayload),
+		},
+		Payload: serializedPayload,
 	}
 
 	return &msg, nil
