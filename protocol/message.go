@@ -79,6 +79,23 @@ func newVarStr(str string) VarStr {
 	}
 }
 
+// UnmarshalBinary implements the binary.Unmarshaler interface
+func (v *VarStr) UnmarshalBinary(r io.Reader) error {
+	lengthBuf := make([]byte, 1)
+	if _, err := r.Read(lengthBuf); err != nil {
+		return fmt.Errorf("varStr.UnmarshalBinary: %+v", err)
+	}
+	v.Length = uint8(lengthBuf[0])
+
+	stringBuf := make([]byte, v.Length)
+	if _, err := r.Read(stringBuf); err != nil {
+		return fmt.Errorf("varStr.UnmarshalBinary: %+v", err)
+	}
+	v.String = string(stringBuf)
+
+	return nil
+}
+
 func checksum(data []byte) [checksumLength]byte {
 	hash := sha256.Sum256(data)
 	hash = sha256.Sum256(hash[:])
