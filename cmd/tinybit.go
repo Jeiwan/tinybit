@@ -116,7 +116,7 @@ func handleVersion(header *protocol.MessageHeader, conn io.Reader) error {
 		return err
 	}
 
-	logrus.Infof("VERSION: %+v", version.UserAgent)
+	logrus.Infof("VERSION: %+v", version.UserAgent.String)
 
 	return nil
 }
