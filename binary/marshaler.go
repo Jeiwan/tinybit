@@ -122,8 +122,3 @@ func marshalStruct(v interface{}) ([]byte, error) {
 
 	return buf.Bytes(), nil
 }
-
-// Unmarshal parses the binary-encoded data and stores the result in the value pointed to by v.
-func Unmarshal(data []byte, v interface{}) error {
-	return nil
-}
