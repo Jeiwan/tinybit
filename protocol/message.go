@@ -19,13 +19,15 @@ const (
 )
 
 var (
-	magicMainnet = [magicLength]byte{0xf9, 0xbe, 0xb4, 0xd9}
-	magicSimnet  = [magicLength]byte{0x16, 0x1c, 0x14, 0x12}
-	networks     = map[string][magicLength]byte{
-		"mainnet": magicMainnet,
-		"simnet":  magicSimnet,
+	MagicMainnet Magic = [magicLength]byte{0xf9, 0xbe, 0xb4, 0xd9}
+	MagicSimnet  Magic = [magicLength]byte{0x16, 0x1c, 0x14, 0x12}
+	networks           = map[string][magicLength]byte{
+		"mainnet": MagicMainnet,
+		"simnet":  MagicSimnet,
 	}
 )
+
+type Magic [magicLength]byte
 
 // MessageHeader ...
 type MessageHeader struct {
@@ -99,7 +101,7 @@ func (mh MessageHeader) HasValidCommand() bool {
 // Returns false otherwise.
 func (mh MessageHeader) HasValidMagic() bool {
 	switch mh.Magic {
-	case magicMainnet, magicSimnet:
+	case MagicMainnet, MagicSimnet:
 		return true
 	}
 
