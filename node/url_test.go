@@ -49,7 +49,7 @@ func TestParseNodeAddr(t *testing.T) {
 				t.Errorf("expected error: %+v, got: %+v", err, actual)
 			}
 
-			if err != test.err {
+			if err != nil && test.err != nil && err.Error() != test.err.Error() {
 				t.Errorf("expected error: %+v, got: %+v", err, test.err)
 			}
 
