@@ -3,8 +3,6 @@ package protocol
 const (
 	// Version ...
 	Version = 70015
-	// UserAgent ...
-	UserAgent = "/Satoshi:5.64/tinybit:0.0.1/"
 
 	// SrvNodeNetwork This node can be asked for full blocks instead of just headers.
 	SrvNodeNetwork = 1
@@ -19,6 +17,6 @@ const (
 )
 
 // NewUserAgent ...
-func NewUserAgent() VarStr {
-	return newVarStr(UserAgent)
+func NewUserAgent(userAgent string) VarStr {
+	return newVarStr(userAgent)
 }

@@ -25,7 +25,7 @@ func TestMessageSerialization(t *testing.T) {
 			Port:     9334,
 		},
 		Nonce:       31337,
-		UserAgent:   protocol.NewUserAgent(),
+		UserAgent:   protocol.NewUserAgent("/Satoshi:5.64/tinybit:0.0.1/"),
 		StartHeight: -1,
 		Relay:       true,
 	}
