@@ -49,6 +49,10 @@ func TestParseNodeAddr(t *testing.T) {
 				t.Errorf("expected error: %+v, got: %+v", err, actual)
 			}
 
+			if err != test.err {
+				t.Errorf("expected error: %+v, got: %+v", err, test.err)
+			}
+
 			if !reflect.DeepEqual(actual, test.expected) {
 				t.Errorf("expected: %+v, actual: %+v", test.expected, actual)
 			}
