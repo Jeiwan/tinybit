@@ -25,56 +25,41 @@ func Marshal(v interface{}) ([]byte, error) {
 		v = reflect.ValueOf(v).Elem().Interface()
 	}
 
-	switch v.(type) {
+	switch val := v.(type) {
 	case uint8, int32, uint32, int64, uint64, bool:
-		if err := binary.Write(&buf, binary.LittleEndian, v); err != nil {
+		if err := binary.Write(&buf, binary.LittleEndian, val); err != nil {
 			return nil, err
 		}
 
 	// port
 	case uint16:
-		if err := binary.Write(&buf, binary.BigEndian, v); err != nil {
+		if err := binary.Write(&buf, binary.BigEndian, val); err != nil {
 			return nil, err
 		}
 
 	case [magicAndChecksumLength]byte:
-		magic, ok := v.([magicAndChecksumLength]byte)
-		if !ok {
-			return nil, fmt.Errorf("invalid magic or checksum: %v", v)
-		}
-
-		if _, err := buf.Write(magic[:]); err != nil {
+		if _, err := buf.Write(val[:]); err != nil {
 			return nil, err
 		}
 
 	case [commandLength]byte:
-		command, ok := v.([commandLength]byte)
-		if !ok {
-			return nil, fmt.Errorf("invalid command: %v", v)
-		}
-
-		if _, err := buf.Write(command[:]); err != nil {
+		if _, err := buf.Write(val[:]); err != nil {
 			return nil, err
 		}
 
 	case []byte:
-		bytes, ok := v.([]byte)
-		if !ok {
-			return nil, fmt.Errorf("invalid byte array: %v", v)
-		}
-
-		if _, err := buf.Write(bytes); err != nil {
+		if _, err := buf.Write(val); err != nil {
 			return nil, err
 		}
 
 	// VarStr.String
 	case string:
-		if _, err := buf.Write([]byte(v.(string))); err != nil {
+		if _, err := buf.Write([]byte(val)); err != nil {
 			return nil, err
 		}
 
 	case Marshaler:
-		b, err := v.(Marshaler).MarshalBinary()
+		b, err := val.MarshalBinary()
 		if err != nil {
 			return nil, err
 		}
