@@ -23,7 +23,7 @@ func NewIPv4(a, b, c, d uint8) IPv4 {
 
 // MarshalBinary implements the binary.Marshaler interface
 func (ip IPv4) MarshalBinary() ([]byte, error) {
-	return append([]byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF}, ip[:]...), nil
+	return append([]byte{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0xFF, 0xFF}, ip[:]...), nil
 }
 
 // UnmarshalBinary implements the binary.Marshaler interface

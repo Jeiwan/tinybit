@@ -75,7 +75,7 @@ func NewMessage(cmd, network string, payload interface{}) (*Message, error) {
 
 // CommandString returns command as a string with zero bytes removed.
 func (mh MessageHeader) CommandString() string {
-	return strings.Trim(string(mh.Command[:]), string(0x00))
+	return strings.Trim(string(mh.Command[:]), string(0))
 }
 
 // Validate ...

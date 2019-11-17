@@ -40,7 +40,7 @@ func TestUnmarshal(t *testing.T) {
 			expected: true},
 
 		{name: "bool false",
-			input:    []byte{0x00},
+			input:    []byte{0},
 			err:      nil,
 			actual:   func() interface{} { var x bool; return &x },
 			expected: false},
@@ -88,10 +88,10 @@ func TestUnmarshal(t *testing.T) {
 			expected: [4]byte{0xde, 0xad, 0xbe, 0xef}},
 
 		{name: "command",
-			input:    []byte{0xde, 0xad, 0xbe, 0xef, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
+			input:    []byte{0xde, 0xad, 0xbe, 0xef, 0, 0, 0, 0, 0, 0, 0, 0},
 			err:      nil,
 			actual:   func() interface{} { var x [12]byte; return &x },
-			expected: [12]byte{0xde, 0xad, 0xbe, 0xef, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}},
+			expected: [12]byte{0xde, 0xad, 0xbe, 0xef, 0, 0, 0, 0, 0, 0, 0, 0}},
 
 		{name: "Unmarshaler",
 			input:    []byte{0x01, 0x02, 0x03},

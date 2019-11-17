@@ -8,7 +8,7 @@ func TestNewCommand(t *testing.T) {
 		expected [commandLength]byte
 		fails    bool
 	}{
-		{input: "test", expected: [commandLength]byte{0x74, 0x65, 0x73, 0x74, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, fails: false},
+		{input: "test", expected: [commandLength]byte{0x74, 0x65, 0x73, 0x74, 0, 0, 0, 0, 0, 0, 0, 0}, fails: false},
 	}
 
 	for _, test := range tests {
