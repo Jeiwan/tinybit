@@ -208,19 +208,3 @@ func (d Decoder) decodeUint64() (out uint64, err error) {
 
 	return
 }
-
-// Unmarshal parses the binary-encoded data and stores the result in the value pointed to by v.
-func Unmarshal(data []byte, v interface{}) error {
-	switch v.(type) {
-	case *uint8:
-		v = unmarshalUint8(data[0])
-	default:
-		return fmt.Errorf("unsupported type %s", reflect.TypeOf(v).String())
-	}
-
-	return nil
-}
-
-func unmarshalUint8(data byte) uint8 {
-	return uint8(data)
-}
