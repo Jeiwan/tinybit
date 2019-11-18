@@ -63,13 +63,13 @@ func (d Decoder) Decode(v interface{}) error {
 		}
 
 	case *[magicAndChecksumLength]byte:
-		err := d.decodeArray(magicAndChecksumLength, val)
+		err := d.decodeArray(magicAndChecksumLength, val[:])
 		if err != nil {
 			return err
 		}
 
 	case *[commandLength]byte:
-		err := d.decodeArray(commandLength, val)
+		err := d.decodeArray(commandLength, val[:])
 		if err != nil {
 			return err
 		}
@@ -95,14 +95,12 @@ func (d Decoder) Decode(v interface{}) error {
 	return nil
 }
 
-func (d Decoder) decodeArray(len int64, out interface{}) (err error) {
-	lr := io.LimitReader(d.r, len)
-
-	if err = binary.Read(lr, binary.LittleEndian, out); err != nil {
-		return
+func (d Decoder) decodeArray(len int64, out []byte) error {
+	if _, err := io.LimitReader(d.r, len).Read(out); err != nil {
+		return err
 	}
 
-	return
+	return nil
 }
 
 func (d Decoder) decodeStruct(v interface{}) error {
