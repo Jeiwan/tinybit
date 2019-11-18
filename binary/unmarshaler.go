@@ -63,20 +63,17 @@ func (d Decoder) Decode(v interface{}) error {
 		}
 
 	case *[magicAndChecksumLength]byte:
-		err := d.decodeArray(magicAndChecksumLength, val[:])
-		if err != nil {
+		if err := d.decodeArray(magicAndChecksumLength, val[:]); err != nil {
 			return err
 		}
 
 	case *[commandLength]byte:
-		err := d.decodeArray(commandLength, val[:])
-		if err != nil {
+		if err := d.decodeArray(commandLength, val[:]); err != nil {
 			return err
 		}
 
 	case Unmarshaler:
-		err := val.UnmarshalBinary(d.r)
-		if err != nil {
+		if err := val.UnmarshalBinary(d.r); err != nil {
 			return err
 		}
 
