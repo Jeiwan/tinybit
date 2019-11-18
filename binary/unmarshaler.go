@@ -28,60 +28,39 @@ func NewDecoder(r io.Reader) *Decoder {
 func (d Decoder) Decode(v interface{}) error {
 	switch val := v.(type) {
 	case *bool:
-		d, err := d.decodeBool()
-		if err != nil {
+		if err := d.decodeBool(val); err != nil {
 			return err
 		}
-
-		*val = d
 
 	case *int32:
-		d, err := d.decodeInt32()
-		if err != nil {
+		if err := d.decodeInt32(val); err != nil {
 			return err
 		}
-
-		*val = d
 
 	case *int64:
-		d, err := d.decodeInt64()
-		if err != nil {
+		if err := d.decodeInt64(val); err != nil {
 			return err
 		}
-
-		*val = d
 
 	case *uint8:
-		d, err := d.decodeUint8()
-		if err != nil {
+		if err := d.decodeUint8(val); err != nil {
 			return err
 		}
-
-		*val = d
 
 	case *uint16:
-		d, err := d.decodeUint16()
-		if err != nil {
+		if err := d.decodeUint16(val); err != nil {
 			return err
 		}
-
-		*val = d
 
 	case *uint32:
-		d, err := d.decodeUint32()
-		if err != nil {
+		if err := d.decodeUint32(val); err != nil {
 			return err
 		}
-
-		*val = d
 
 	case *uint64:
-		d, err := d.decodeUint64()
-		if err != nil {
+		if err := d.decodeUint64(val); err != nil {
 			return err
 		}
-
-		*val = d
 
 	case *[magicAndChecksumLength]byte:
 		err := d.decodeArray(magicAndChecksumLength, val)
@@ -139,72 +118,72 @@ func (d Decoder) decodeStruct(v interface{}) error {
 	return nil
 }
 
-func (d Decoder) decodeBool() (out bool, err error) {
+func (d Decoder) decodeBool(out *bool) error {
 	lr := io.LimitReader(d.r, 1)
 
-	if err = binary.Read(lr, binary.LittleEndian, &out); err != nil {
-		return
+	if err := binary.Read(lr, binary.LittleEndian, out); err != nil {
+		return err
 	}
 
-	return
+	return nil
 }
 
-func (d Decoder) decodeInt32() (out int32, err error) {
+func (d Decoder) decodeInt32(out *int32) error {
 	lr := io.LimitReader(d.r, 4)
 
-	if err = binary.Read(lr, binary.LittleEndian, &out); err != nil {
-		return
+	if err := binary.Read(lr, binary.LittleEndian, out); err != nil {
+		return err
 	}
 
-	return
+	return nil
 }
 
-func (d Decoder) decodeInt64() (out int64, err error) {
+func (d Decoder) decodeInt64(out *int64) error {
 	lr := io.LimitReader(d.r, 8)
 
-	if err = binary.Read(lr, binary.LittleEndian, &out); err != nil {
-		return
+	if err := binary.Read(lr, binary.LittleEndian, out); err != nil {
+		return err
 	}
 
-	return
+	return nil
 }
 
-func (d Decoder) decodeUint8() (out uint8, err error) {
+func (d Decoder) decodeUint8(out *uint8) error {
 	lr := io.LimitReader(d.r, 1)
 
-	if err = binary.Read(lr, binary.LittleEndian, &out); err != nil {
-		return
+	if err := binary.Read(lr, binary.LittleEndian, out); err != nil {
+		return err
 	}
 
-	return
+	return nil
 }
 
-func (d Decoder) decodeUint16() (out uint16, err error) {
+func (d Decoder) decodeUint16(out *uint16) error {
 	lr := io.LimitReader(d.r, 2)
 
-	if err = binary.Read(lr, binary.BigEndian, &out); err != nil {
-		return
+	if err := binary.Read(lr, binary.BigEndian, out); err != nil {
+		return err
 	}
 
-	return
+	return nil
 }
 
-func (d Decoder) decodeUint32() (out uint32, err error) {
+func (d Decoder) decodeUint32(out *uint32) error {
 	lr := io.LimitReader(d.r, 4)
 
-	if err = binary.Read(lr, binary.LittleEndian, &out); err != nil {
-		return
+	if err := binary.Read(lr, binary.LittleEndian, out); err != nil {
+		return err
 	}
 
-	return
+	return nil
 }
 
-func (d Decoder) decodeUint64() (out uint64, err error) {
+func (d Decoder) decodeUint64(out *uint64) error {
 	lr := io.LimitReader(d.r, 8)
 
-	if err = binary.Read(lr, binary.LittleEndian, &out); err != nil {
-		return
+	if err := binary.Read(lr, binary.LittleEndian, out); err != nil {
+		return err
 	}
 
-	return
+	return nil
 }
