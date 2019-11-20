@@ -1,6 +1,7 @@
 ## tinybit
 
-Tiny Bitcoin Node. In early development, probably will never be finished. 
+Tiny Bitcoin Node. In early development, probably will never be finished. Hopefully, will have some useful features.
+
 Implementation is explained in a series of blog posts:
 
 1. [Programming the Bitcoin Network](https://jeiwan.net/posts/programming-bitcoin-network/)
