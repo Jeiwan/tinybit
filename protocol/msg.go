@@ -85,7 +85,7 @@ func (mh MessageHeader) Validate() error {
 	}
 
 	if !mh.HasValidCommand() {
-		return fmt.Errorf("invalid command: %+v", mh.CommandString())
+		return fmt.Errorf("invalid command: %s", mh.CommandString())
 	}
 	return nil
 }
