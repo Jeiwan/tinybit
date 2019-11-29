@@ -22,7 +22,7 @@ func TestNewVerackMsg(t *testing.T) {
 				MessageHeader: protocol.MessageHeader{
 					Magic:    [4]byte{249, 190, 180, 217},
 					Command:  [12]byte{118, 101, 114, 97, 99, 107, 0, 0, 0, 0, 0, 0},
-					Length:   0,
+					Length:   uint32(0),
 					Checksum: [4]byte{93, 246, 224, 226},
 				},
 				Payload: []byte{},

@@ -43,7 +43,7 @@ type Message struct {
 	Payload []byte
 }
 
-// NewMessage ...
+// NewMessage returns a new Message.
 func NewMessage(cmd, network string, payload interface{}) (*Message, error) {
 	serializedPayload, err := binary.Marshal(payload)
 	if err != nil {
@@ -57,7 +57,7 @@ func NewMessage(cmd, network string, payload interface{}) (*Message, error) {
 
 	magic, ok := Networks[network]
 	if !ok {
-		return nil, fmt.Errorf("unsupported network %s", network)
+		return nil, fmt.Errorf("unsupported network '%s'", network)
 	}
 
 	msg := Message{

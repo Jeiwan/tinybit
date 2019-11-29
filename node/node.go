@@ -4,9 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"math/rand"
 	"net"
-	"time"
 
 	"github.com/Jeiwan/tinybit/binary"
 	"github.com/Jeiwan/tinybit/protocol"
@@ -42,32 +40,17 @@ func (no Node) Run(nodeAddr string) error {
 		return err
 	}
 
-	version := protocol.MsgVersion{
-		Version:   protocol.Version,
-		Services:  protocol.SrvNodeNetwork,
-		Timestamp: time.Now().UTC().Unix(),
-		AddrRecv: protocol.VersionNetAddr{
-			Services: protocol.SrvNodeNetwork,
-			IP:       peerAddr.IP,
-			Port:     peerAddr.Port,
-		},
-		AddrFrom: protocol.VersionNetAddr{
-			Services: protocol.SrvNodeNetwork,
-			IP:       protocol.NewIPv4(127, 0, 0, 1),
-			Port:     9334,
-		},
-		Nonce:       nonce(),
-		UserAgent:   protocol.NewUserAgent(no.UserAgent),
-		StartHeight: -1,
-		Relay:       true,
-	}
-
-	msg, err := protocol.NewMessage("version", no.Network, version)
+	version, err := protocol.NewVersionMsg(
+		no.Network,
+		no.UserAgent,
+		peerAddr.IP,
+		peerAddr.Port,
+	)
 	if err != nil {
-		logrus.Fatalln(err)
+		return err
 	}
 
-	msgSerialized, err := binary.Marshal(msg)
+	msgSerialized, err := binary.Marshal(version)
 	if err != nil {
 		logrus.Fatalln(err)
 	}
@@ -129,8 +112,4 @@ Loop:
 	}
 
 	return nil
-}
-
-func nonce() uint64 {
-	return rand.Uint64()
 }
