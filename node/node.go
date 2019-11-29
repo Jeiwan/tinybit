@@ -17,6 +17,7 @@ import (
 type Node struct {
 	Network      string
 	NetworkMagic protocol.Magic
+	Peers        []Peer
 	UserAgent    string
 }
 

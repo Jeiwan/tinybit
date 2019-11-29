@@ -16,7 +16,18 @@ func (n Node) handleVersion(header *protocol.MessageHeader, conn io.ReadWriter) 
 		return err
 	}
 
-	logrus.Infof("VERSION: %+v", version.UserAgent.String)
+	peer := Peer{
+		Connection: conn,
+		Services:   version.Services,
+		IP:         version.AddrFrom.IP,
+		Port:       version.AddrFrom.Port,
+		UserAgent:  version.UserAgent.String,
+		Version:    version.Version,
+	}
+
+	n.Peers = append(n.Peers, peer)
+
+	logrus.Debugf("new peer %s (%s:%d)", peer.UserAgent, peer.IP.String(), peer.Port)
 
 	verack, err := protocol.NewVerackMsg(n.Network)
 	if err != nil {
