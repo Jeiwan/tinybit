@@ -114,6 +114,11 @@ Loop:
 				logrus.Errorf("failed to handle 'version': %+v", err)
 				continue
 			}
+		case "verack":
+			if err := no.handleVerack(&msgHeader, conn); err != nil {
+				logrus.Errorf("failed to handle 'verack': %+v", err)
+				continue
+			}
 		}
 	}
 
