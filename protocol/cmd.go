@@ -5,12 +5,14 @@ import "github.com/sirupsen/logrus"
 const (
 	cmdPing       = "ping"
 	cmdPong       = "pong"
+	cmdVerack     = "verack"
 	cmdVersion    = "version"
 	commandLength = 12
 )
 
 var commands = map[string][commandLength]byte{
 	cmdVersion: newCommand(cmdVersion),
+	cmdVerack:  newCommand(cmdVerack),
 }
 
 func newCommand(command string) [commandLength]byte {
