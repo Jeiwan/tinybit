@@ -11,6 +11,8 @@ const (
 )
 
 var commands = map[string][commandLength]byte{
+	cmdPing:    newCommand(cmdPing),
+	cmdPong:    newCommand(cmdPong),
 	cmdVersion: newCommand(cmdVersion),
 	cmdVerack:  newCommand(cmdVerack),
 }

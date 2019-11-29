@@ -120,6 +120,11 @@ Loop:
 				logrus.Errorf("failed to handle 'verack': %+v", err)
 				continue
 			}
+		case "ping":
+			if err := no.handlePing(&msgHeader, conn); err != nil {
+				logrus.Errorf("failed to handle 'ping': %+v", err)
+				continue
+			}
 		}
 	}
 
