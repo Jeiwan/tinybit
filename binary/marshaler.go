@@ -19,7 +19,7 @@ type Marshaler interface {
 
 // Marshal returns the binary encoding of v.
 func Marshal(v interface{}) ([]byte, error) {
-	var buf bytes.Buffer
+	buf := bytes.NewBuffer([]byte{})
 
 	if reflect.TypeOf(v).Kind() == reflect.Ptr {
 		v = reflect.ValueOf(v).Elem().Interface()
@@ -27,13 +27,13 @@ func Marshal(v interface{}) ([]byte, error) {
 
 	switch val := v.(type) {
 	case uint8, int32, uint32, int64, uint64, bool:
-		if err := binary.Write(&buf, binary.LittleEndian, val); err != nil {
+		if err := binary.Write(buf, binary.LittleEndian, val); err != nil {
 			return nil, err
 		}
 
 	// port
 	case uint16:
-		if err := binary.Write(&buf, binary.BigEndian, val); err != nil {
+		if err := binary.Write(buf, binary.BigEndian, val); err != nil {
 			return nil, err
 		}
 
@@ -90,7 +90,7 @@ func Marshal(v interface{}) ([]byte, error) {
 }
 
 func marshalStruct(v interface{}) ([]byte, error) {
-	var buf bytes.Buffer
+	buf := bytes.NewBuffer([]byte{})
 	vv := reflect.ValueOf(v)
 
 	for i := 0; i < vv.NumField(); i++ {

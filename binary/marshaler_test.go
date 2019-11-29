@@ -1,8 +1,8 @@
 package binary_test
 
 import (
-	"bytes"
 	"errors"
+	"reflect"
 	"testing"
 
 	"github.com/Jeiwan/tinybit/binary"
@@ -66,10 +66,15 @@ func TestMarshal(t *testing.T) {
 			err:      nil,
 			expected: []byte{0x74, 0x65, 0x73, 0x74, 0, 0, 0, 0, 0, 0, 0, 0}},
 
-		{name: "byte array",
+		{name: "bytes slice",
 			input:    []byte{0x12, 0x34, 0x56, 0x78},
 			err:      nil,
 			expected: []byte{0x12, 0x34, 0x56, 0x78}},
+
+		{name: "empty bytes slice",
+			input:    []byte{},
+			err:      nil,
+			expected: []byte{}},
 
 		{name: "struct",
 			input: struct {
@@ -133,8 +138,8 @@ func TestMarshal(t *testing.T) {
 				return
 			}
 
-			if !bytes.Equal(actual, test.expected) {
-				tt.Errorf("expected: %x, actual %x", test.expected, actual)
+			if !reflect.DeepEqual(actual, test.expected) {
+				tt.Errorf("expected: %v, actual %v", test.expected, actual)
 			}
 		})
 	}
