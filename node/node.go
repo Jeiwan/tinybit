@@ -85,7 +85,6 @@ Loop:
 			break Loop
 		}
 
-		logrus.Debugf("received header: %x", tmp[:n])
 		var msgHeader protocol.MessageHeader
 		if err := binary.NewDecoder(bytes.NewReader(tmp[:n])).Decode(&msgHeader); err != nil {
 			logrus.Errorf("invalid header: %+v", err)
