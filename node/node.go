@@ -15,7 +15,9 @@ import (
 type Node struct {
 	Network      string
 	NetworkMagic protocol.Magic
-	Peers        []Peer
+	Peers        map[string]*Peer
+	PingCh       chan peerPing
+	PongCh       chan uint64
 	UserAgent    string
 }
 
@@ -29,6 +31,9 @@ func New(network, userAgent string) (*Node, error) {
 	return &Node{
 		Network:      network,
 		NetworkMagic: networkMagic,
+		Peers:        make(map[string]*Peer),
+		PingCh:       make(chan peerPing),
+		PongCh:       make(chan uint64),
 		UserAgent:    userAgent,
 	}, nil
 }
@@ -52,19 +57,21 @@ func (no Node) Run(nodeAddr string) error {
 
 	msgSerialized, err := binary.Marshal(version)
 	if err != nil {
-		logrus.Fatalln(err)
+		return err
 	}
 
 	conn, err := net.Dial("tcp", nodeAddr)
 	if err != nil {
-		logrus.Fatalln(err)
+		return err
 	}
 	defer conn.Close()
 
 	_, err = conn.Write(msgSerialized)
 	if err != nil {
-		logrus.Fatalln(err)
+		return err
 	}
+
+	go no.monitorPeers()
 
 	tmp := make([]byte, protocol.MsgHeaderLength)
 
@@ -108,8 +115,24 @@ Loop:
 				logrus.Errorf("failed to handle 'ping': %+v", err)
 				continue
 			}
+		case "pong":
+			if err := no.handlePong(&msgHeader, conn); err != nil {
+				logrus.Errorf("failed to handle 'pong': %+v", err)
+				continue
+			}
 		}
 	}
 
 	return nil
+}
+
+func (no Node) disconnectPeer(peerID string) {
+	logrus.Debugf("disconnecting peer %s", peerID)
+
+	peer := no.Peers[peerID]
+	if peer == nil {
+		return
+	}
+
+	peer.Connection.Close()
 }

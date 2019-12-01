@@ -15,17 +15,18 @@ type MsgPong struct {
 }
 
 // NewPingMsg returns a new MsgPing.
-func NewPingMsg(network string) (*Message, error) {
+func NewPingMsg(network string) (*Message, uint64, error) {
+	nonce := rand.Uint64()
 	payload := MsgPing{
-		Nonce: rand.Uint64(),
+		Nonce: nonce,
 	}
 
 	msg, err := NewMessage("ping", network, payload)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
-	return msg, nil
+	return msg, nonce, nil
 }
 
 // NewPongMsg returns a new MsgPong.
