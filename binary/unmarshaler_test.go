@@ -143,14 +143,9 @@ func TestUnmarshal(t *testing.T) {
 				return
 			}
 
-			if !reflect.DeepEqual(actual, test.expected) {
-				tt.Errorf(
-					"expected: %v (%v), actual %v (%v)",
-					test.expected,
-					reflect.TypeOf(test.expected),
-					actual,
-					reflect.TypeOf(actual),
-				)
+			if diff := cmp.Diff(test.expected, actual); diff != "" {
+				tt.Errorf("Decode() mismatch(-want +got):\n%s", diff)
+				return
 			}
 		})
 	}
