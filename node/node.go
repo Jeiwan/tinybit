@@ -119,6 +119,16 @@ Loop:
 				logrus.Errorf("failed to handle 'pong': %+v", err)
 				continue
 			}
+		case "inv":
+			if err := no.handleInv(&msgHeader, conn); err != nil {
+				logrus.Errorf("failed to handle 'inv': %+v", err)
+				continue
+			}
+		case "tx":
+			if err := no.handleTx(&msgHeader, conn); err != nil {
+				logrus.Errorf("failed to handle 'tx': %+v", err)
+				continue
+			}
 		}
 	}
 
