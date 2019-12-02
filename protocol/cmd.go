@@ -7,6 +7,7 @@ const (
 	cmdInv        = "inv"
 	cmdPing       = "ping"
 	cmdPong       = "pong"
+	cmdTx         = "tx"
 	cmdVerack     = "verack"
 	cmdVersion    = "version"
 	commandLength = 12
@@ -17,6 +18,8 @@ var commands = map[string][commandLength]byte{
 	cmdInv:     newCommand(cmdInv),
 	cmdPing:    newCommand(cmdPing),
 	cmdPong:    newCommand(cmdPong),
+	cmdTx:      newCommand(cmdTx),
+	cmdVerack:  newCommand(cmdVerack),
 	cmdVersion: newCommand(cmdVersion),
 	cmdVerack:  newCommand(cmdVerack),
 }
