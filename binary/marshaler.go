@@ -48,6 +48,11 @@ func Marshal(v interface{}) ([]byte, error) {
 			return nil, err
 		}
 
+	case [hashLength]byte:
+		if _, err := buf.Write(val[:]); err != nil {
+			return nil, err
+		}
+
 	case []byte:
 		if _, err := buf.Write(val); err != nil {
 			return nil, err
