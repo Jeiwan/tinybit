@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/Jeiwan/tinybit/binary"
+	"github.com/google/go-cmp/cmp"
 )
 
 type customUnmarshaler struct {

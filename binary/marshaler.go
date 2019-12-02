@@ -9,6 +9,7 @@ import (
 
 const (
 	commandLength          = 12
+	hashLength             = 32
 	magicAndChecksumLength = 4
 )
 
