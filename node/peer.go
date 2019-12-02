@@ -56,6 +56,7 @@ func (n Node) monitorPeers() {
 			}
 
 			peer.PongCh <- nonce
+			delete(peerPings, nonce)
 
 		case pp := <-n.PingCh:
 			peerPings[pp.nonce] = pp.peerID
