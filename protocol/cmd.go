@@ -21,7 +21,6 @@ var commands = map[string][commandLength]byte{
 	cmdTx:      newCommand(cmdTx),
 	cmdVerack:  newCommand(cmdVerack),
 	cmdVersion: newCommand(cmdVersion),
-	cmdVerack:  newCommand(cmdVerack),
 }
 
 func newCommand(command string) [commandLength]byte {
