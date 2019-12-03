@@ -4,8 +4,9 @@ Tiny Bitcoin Node. In early development, probably will never be finished. Hopefu
 
 Implementation is explained in a series of blog posts:
 
-1. [Programming the Bitcoin Network](https://jeiwan.net/posts/programming-bitcoin-network/)
-1. [Programming the Bitcoin Network, part 2](https://jeiwan.net/posts/programming-bitcoin-network-2/)
+1. [Programming Bitcoin Network](https://jeiwan.net/posts/programming-bitcoin-network/)
+1. [Programming Bitcoin Network, part 2](https://jeiwan.net/posts/programming-bitcoin-network-2/)
+1. [Programming Bitcoin Network, part 3](https://jeiwan.net/posts/programming-bitcoin-network-3/)
 
 ### Running
 1. Install [btcd](https://github.com/btcsuite/btcd).
