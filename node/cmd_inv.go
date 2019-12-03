@@ -16,9 +16,7 @@ func (no Node) handleInv(header *protocol.MessageHeader, conn io.ReadWriter) err
 	}
 
 	var getData protocol.MsgGetData
-	for _, o := range inv.Inventory {
-		getData.Inventory = append(getData.Inventory, o)
-	}
+	getData.Inventory = inv.Inventory
 	getData.Count = inv.Count
 
 	getDataMsg, err := protocol.NewMessage("getdata", no.Network, getData)
