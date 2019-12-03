@@ -92,9 +92,11 @@ func (n *Node) monitorPeer(peer *Peer) {
 		t := time.NewTimer(pingTimeoutSec * time.Second)
 
 		select {
-		case n := <-peer.PongCh:
-			if n != nonce {
-				logrus.Fatalf("nonce doesn't match for %s: want %d, got %d", peer, nonce, n)
+		case pn := <-peer.PongCh:
+			if pn != nonce {
+				logrus.Errorf("nonce doesn't match for %s: want %d, got %d", peer, nonce, pn)
+				n.disconnectPeer(peer.ID())
+				return
 			}
 			logrus.Debugf("got 'pong' from %s", peer)
 		case <-t.C:
