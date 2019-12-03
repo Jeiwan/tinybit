@@ -98,7 +98,9 @@ func (n *Node) monitorPeer(peer *Peer) {
 			}
 			logrus.Debugf("got 'pong' from %s", peer)
 		case <-t.C:
+			// TODO: clean up peerPings, memory leak possible
 			n.disconnectPeer(peer.ID())
+			return
 		}
 
 		t.Stop()
