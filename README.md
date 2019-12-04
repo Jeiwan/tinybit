@@ -13,3 +13,13 @@ Implementation is explained in a series of blog posts:
 1. `btcd --configfile ./btcd.conf`
 1. `go build`
 1. `./tinybit`
+
+
+### Implemented so far
+
+1. messages serialization and deserialization (see `binary` package)
+1. 'version', 'verack' messages
+1. 'inv'
+1. 'tx'
+1. 'getdata'
+1. 'ping', 'pong'
