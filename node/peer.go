@@ -27,8 +27,8 @@ type Peer struct {
 }
 
 // ID returns peer ID.
-func (p Peer) ID() string {
-	return p.Address.String()
+func (p Peer) ID() PeerID {
+	return PeerID(p.Address.String())
 }
 
 func (p Peer) String() string {
@@ -37,11 +37,11 @@ func (p Peer) String() string {
 
 type peerPing struct {
 	nonce  uint64
-	peerID string
+	peerID PeerID
 }
 
 func (n Node) monitorPeers() {
-	peerPings := make(map[uint64]string)
+	peerPings := make(map[uint64]PeerID)
 
 	for {
 		select {
@@ -60,6 +60,8 @@ func (n Node) monitorPeers() {
 
 		case pp := <-n.PingCh:
 			peerPings[pp.nonce] = pp.peerID
+		case peerid := <-n.DisconCh:
+			n.disconnectPeer(peerid)
 		}
 	}
 }
@@ -95,13 +97,13 @@ func (n *Node) monitorPeer(peer *Peer) {
 		case pn := <-peer.PongCh:
 			if pn != nonce {
 				logrus.Errorf("nonce doesn't match for %s: want %d, got %d", peer, nonce, pn)
-				n.disconnectPeer(peer.ID())
+				n.DisconCh <- peer.ID()
 				return
 			}
 			logrus.Debugf("got 'pong' from %s", peer)
 		case <-t.C:
 			// TODO: clean up peerPings, memory leak possible
-			n.disconnectPeer(peer.ID())
+			n.DisconCh <- peer.ID()
 			return
 		}
 
