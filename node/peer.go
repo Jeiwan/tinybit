@@ -41,6 +41,7 @@ type peerPing struct {
 }
 
 func (n Node) monitorPeers() {
+	// TODO: make this concurrent
 	peerPings := make(map[uint64]PeerID)
 
 	for {
@@ -60,8 +61,16 @@ func (n Node) monitorPeers() {
 
 		case pp := <-n.PingCh:
 			peerPings[pp.nonce] = pp.peerID
-		case peerid := <-n.DisconCh:
-			n.disconnectPeer(peerid)
+
+		case peerID := <-n.DisconCh:
+			n.disconnectPeer(peerID)
+
+			for k, v := range peerPings {
+				if v == peerID {
+					delete(peerPings, k)
+					break
+				}
+			}
 		}
 	}
 }
@@ -102,7 +111,6 @@ func (n *Node) monitorPeer(peer *Peer) {
 			}
 			logrus.Debugf("got 'pong' from %s", peer)
 		case <-t.C:
-			// TODO: clean up peerPings, memory leak possible
 			n.DisconCh <- peer.ID()
 			return
 		}

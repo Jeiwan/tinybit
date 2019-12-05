@@ -11,7 +11,9 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+// PeerID is peer IP address.
 type PeerID string
+
 // Node implements a Bitcoin node.
 type Node struct {
 	Network      string
@@ -35,7 +37,7 @@ func New(network, userAgent string) (*Node, error) {
 		NetworkMagic: networkMagic,
 		Peers:        make(map[PeerID]*Peer),
 		PingCh:       make(chan peerPing),
-		DisconCh:	  make(chan PeerID),
+		DisconCh:     make(chan PeerID),
 		PongCh:       make(chan uint64),
 		UserAgent:    userAgent,
 	}, nil
@@ -147,5 +149,5 @@ func (no Node) disconnectPeer(peerID PeerID) {
 	}
 
 	peer.Connection.Close()
-	delete(no.Peers,peerID)
+	delete(no.Peers, peerID)
 }
