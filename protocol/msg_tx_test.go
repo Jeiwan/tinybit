@@ -9,6 +9,55 @@ import (
 	"github.com/google/go-cmp/cmp"
 )
 
+func TestMsgTxMarshalBinary(t *testing.T) {
+	tests := []struct {
+		name  string
+		txmsg string
+		err   error
+	}{
+		{name: "legacy",
+			txmsg: "0100000001317c144ae5b5a224370bd68c928b9f9e152d9829235ffbecec5ee64113662fc4000000006a47304402203c6ef3cba423365b37c031d235a674a10cf06b14fccda68bb5c35cbda5a2969b02207da3f69ea61c4a98eb488dac9d8a421dda9000e8afdc4a90cc2ebf93fbefb84f012102e248c2b8e9a5b78f2406c60b75ef1c4e88a06c7c36ad31e009db256505e27e79ffffffff0388270c00000000001976a914fe46ec55e937e584005b337495d76464b6b1cdba88ac22020000000000001976a914bdcccc7ce08a732ce55dcc3c1d8890e372bf7c1d88ac0000000000000000166a146f6d6e69000000000000001f0000886c98b7600000000000",
+			err:   nil},
+		{name: "segwit",
+			txmsg: "0100000000010145b87f940bc57475403a3928ecf4cb3b86d2ba192039d4d703126edad14487ca0100000000ffffffff0200093d000000000017a91469f375f23b3d5d37bd942f3c31d7ae5a0cb61f5e87c8db030000000000220020701a8d401c84fb13e6baf169d59684e17abd9fa216c8cc5b9fc63d622ff8c58d0400473044022025863cfe71648bc8703f9f0607558cb7e79fcbebadc080ef1f0d7bfdd6ab1afa0220101ffaeb01b70e3360e87d6b3616886e547593e41c8a09d00cf8803601a9cc7901473044022031caba2ba6b079bc0d995e04f3651f977b5fc22dacceab1046a311fa2fb83898022030f5a852b425bdeb156be3a0a3de5bbc764302fbc1b7ca77058740cd511d49a9016952210375e00eb72e29da82b89367947f29ef34afb75e8654f6ea368e0acdfd92976b7c2103a1b26313f430c4b15bb1fdce663207659d8cac749a0e53d70eff01874496feff2103c96d495bfdd5ba4145e3e046fee45e84a8a48ad05bd8dbb395c011a32cf9f88053ae00000000",
+			err:   nil},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(tt *testing.T) {
+			tx := protocol.MsgTx{}
+
+			txmsg, err := hex.DecodeString(test.txmsg)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			r := bytes.NewBuffer(txmsg)
+			err = tx.UnmarshalBinary(r)
+			if err != nil {
+				tt.Fatalf("unexpected error: %+v", err)
+			}
+
+			got, err := tx.MarshalBinary()
+			if err != nil && test.err == nil {
+				tt.Errorf("unexpected error: %+v", err)
+				return
+			}
+
+			if err == nil && test.err != nil {
+				tt.Errorf("expected error: %+v, got:%+v", test.err, tx)
+				return
+			}
+
+			if diff := cmp.Diff(txmsg, got); diff != "" {
+				tt.Errorf("MarshalBinary() mismatch(-want +got):\n%s", diff)
+				return
+			}
+		})
+	}
+
+}
+
 func TestMsgTxUnmarshalBinary(t *testing.T) {
 	tests := []struct {
 		name     string

@@ -20,6 +20,85 @@ type MsgTx struct {
 	LockTime   uint32
 }
 
+// MarshalBinary implements binary.Marshaler interface.
+func (tx MsgTx) MarshalBinary() ([]byte, error) {
+	buf := bytes.NewBuffer([]byte{})
+
+	b, err := binary.Marshal(tx.Version)
+	if err != nil {
+		return nil, err
+	}
+	if _, err := buf.Write(b); err != nil {
+		return nil, err
+	}
+
+	if tx.Flag == uint16(1) {
+		b, err := binary.Marshal(tx.Flag)
+		if err != nil {
+			return nil, err
+		}
+		if _, err := buf.Write(b); err != nil {
+			return nil, err
+		}
+	}
+
+	b, err = binary.Marshal(tx.TxInCount)
+	if err != nil {
+		return nil, err
+	}
+	if _, err := buf.Write(b); err != nil {
+		return nil, err
+	}
+
+	for _, txin := range tx.TxIn {
+		b, err = binary.Marshal(txin)
+		if err != nil {
+			return nil, err
+		}
+		if _, err := buf.Write(b); err != nil {
+			return nil, err
+		}
+	}
+
+	b, err = binary.Marshal(tx.TxOutCount)
+	if err != nil {
+		return nil, err
+	}
+	if _, err := buf.Write(b); err != nil {
+		return nil, err
+	}
+
+	for _, txout := range tx.TxOut {
+		b, err = binary.Marshal(txout)
+		if err != nil {
+			return nil, err
+		}
+		if _, err := buf.Write(b); err != nil {
+			return nil, err
+		}
+	}
+
+	if tx.Flag == uint16(1) {
+		b, err = binary.Marshal(tx.TxWitness)
+		if err != nil {
+			return nil, err
+		}
+		if _, err := buf.Write(b); err != nil {
+			return nil, err
+		}
+	}
+
+	b, err = binary.Marshal(tx.LockTime)
+	if err != nil {
+		return nil, err
+	}
+	if _, err := buf.Write(b); err != nil {
+		return nil, err
+	}
+
+	return buf.Bytes(), nil
+}
+
 // UnmarshalBinary implements binary.Unmarshaler
 func (tx *MsgTx) UnmarshalBinary(r io.Reader) error {
 	d := binary.NewDecoder(r)
@@ -121,6 +200,31 @@ type OutPoint struct {
 	Index uint32
 }
 
+// MarshalBinary implements binary.Marshaler interface.
+func (txw TxWitnessData) MarshalBinary() ([]byte, error) {
+	var buf = bytes.NewBuffer([]byte{})
+
+	b, err := binary.Marshal(txw.Count)
+	if err != nil {
+		return nil, err
+	}
+	if _, err := buf.Write(b); err != nil {
+		return nil, err
+	}
+
+	for _, w := range txw.Witness {
+		b, err := binary.Marshal(w)
+		if err != nil {
+			return nil, err
+		}
+		if _, err := buf.Write(b); err != nil {
+			return nil, err
+		}
+	}
+
+	return buf.Bytes(), nil
+}
+
 // UnmarshalBinary implements binary.Unmarshaler interface.
 func (txw *TxWitnessData) UnmarshalBinary(r io.Reader) error {
 	d := binary.NewDecoder(r)
@@ -142,6 +246,29 @@ func (txw *TxWitnessData) UnmarshalBinary(r io.Reader) error {
 	}
 
 	return nil
+}
+
+// MarshalBinary implements binary.Marshaler interface.
+func (txw *TxWitness) MarshalBinary() ([]byte, error) {
+	var buf = bytes.NewBuffer([]byte{})
+
+	b, err := binary.Marshal(txw.Length)
+	if err != nil {
+		return nil, err
+	}
+	if _, err := buf.Write(b); err != nil {
+		return nil, err
+	}
+
+	b, err = binary.Marshal(txw.Data)
+	if err != nil {
+		return nil, err
+	}
+	if _, err := buf.Write(b); err != nil {
+		return nil, err
+	}
+
+	return buf.Bytes(), nil
 }
 
 // UnmarshalBinary implements binary.Unmarshaler interface.
