@@ -9,6 +9,54 @@ import (
 	"github.com/google/go-cmp/cmp"
 )
 
+func TestMsgHash(t *testing.T) {
+	tests := []struct {
+		name     string
+		txmsg    string
+		expected string
+		err      error
+	}{
+		{name: "ok",
+			txmsg:    "010000000141ccfc44eab10fa75d60dd9dd90e6c8c41cb880a10ef99bb3896bca6af796199000000006a47304402201276349a2710b36068447612019edb3c55c4e2a2720dfd22550da91f41cdfe2a0220347037d93994cf0032647f8ab64c9aeffdf73edb044818e438a4825e8648dc800121036b9b2e7bf8a167f2e26db84a6c30f4501bf25d5c53e6414291a724c32146763affffffff02020f1c00000000001976a9146e62bcf043873843bf5ba5245c6f8b185664956c88ac4bb12104000000001976a91427c22ca26f837c70e74a7b881b8a1d1405f8350988ac00000000",
+			expected: "51c564bb064c2e98eef0dd79cc1ecd4cbd64acb2d1878aeffb8bf039a016d9c4",
+			err:      nil},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(tt *testing.T) {
+			tx := protocol.MsgTx{}
+
+			txmsg, err := hex.DecodeString(test.txmsg)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			r := bytes.NewBuffer(txmsg)
+			err = tx.UnmarshalBinary(r)
+			if err != nil {
+				tt.Fatalf("unexpected error: %+v", err)
+			}
+
+			txhash, err := tx.Hash()
+			if err != nil && test.err == nil {
+				tt.Errorf("unexpected error: %+v", err)
+				return
+			}
+
+			if err == nil && test.err != nil {
+				tt.Errorf("expected error: %+v, got:%+v", test.err, tx)
+				return
+			}
+
+			got := hex.EncodeToString(txhash)
+			if diff := cmp.Diff(test.expected, got); diff != "" {
+				tt.Errorf("Hash() mismatch(-want +got):\n%s", diff)
+				return
+			}
+		})
+	}
+}
+
 func TestMsgTxMarshalBinary(t *testing.T) {
 	tests := []struct {
 		name  string

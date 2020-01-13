@@ -2,8 +2,10 @@ package protocol
 
 import (
 	"bytes"
+	"crypto/sha256"
 	"fmt"
 	"io"
+	"sort"
 
 	"github.com/Jeiwan/tinybit/binary"
 )
@@ -18,6 +20,25 @@ type MsgTx struct {
 	TxOut      []TxOutput
 	TxWitness  TxWitnessData
 	LockTime   uint32
+}
+
+// Hash returns transaction ID.
+func (tx MsgTx) Hash() ([]byte, error) {
+	serialized, err := tx.MarshalBinary()
+	if err != nil {
+		return nil, err
+	}
+
+	hash := sha256.Sum256(serialized)
+	hash = sha256.Sum256(hash[:])
+
+	txid := hash[:]
+
+	sort.SliceStable(txid, func(i, j int) bool {
+		return true
+	})
+
+	return txid, nil
 }
 
 // MarshalBinary implements binary.Marshaler interface.
