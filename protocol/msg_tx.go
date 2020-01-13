@@ -26,7 +26,7 @@ type MsgTx struct {
 func (tx MsgTx) Hash() ([]byte, error) {
 	serialized, err := tx.MarshalBinary()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("tx.MarshalBinary: %+v", err)
 	}
 
 	hash := sha256.Sum256(serialized)
