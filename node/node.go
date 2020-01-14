@@ -16,7 +16,6 @@ type PeerID string
 
 // Node implements a Bitcoin node.
 type Node struct {
-	Mempool      *Mempool
 	Network      string
 	NetworkMagic protocol.Magic
 	Peers        map[PeerID]*Peer
@@ -24,6 +23,8 @@ type Node struct {
 	PongCh       chan uint64
 	DisconCh     chan PeerID
 	UserAgent    string
+
+	mempool *Mempool
 }
 
 // New returns a new Node.
@@ -34,7 +35,6 @@ func New(network, userAgent string) (*Node, error) {
 	}
 
 	return &Node{
-		Mempool:      NewMempool(),
 		Network:      network,
 		NetworkMagic: networkMagic,
 		Peers:        make(map[PeerID]*Peer),
@@ -42,6 +42,8 @@ func New(network, userAgent string) (*Node, error) {
 		DisconCh:     make(chan PeerID),
 		PongCh:       make(chan uint64),
 		UserAgent:    userAgent,
+
+		mempool: NewMempool(),
 	}, nil
 }
 

@@ -16,10 +16,11 @@ type Server struct {
 }
 
 // NewServer returns a new Server.
-func NewServer(port int) (*Server, error) {
+func NewServer(port int, node Node) (*Server, error) {
 	rpcs := rpc.NewServer()
 
-	if err := rpcs.Register(new(RPC)); err != nil {
+	handlers := RPC{node: node}
+	if err := rpcs.Register(handlers); err != nil {
 		return nil, err
 	}
 

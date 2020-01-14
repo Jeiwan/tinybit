@@ -6,14 +6,17 @@ import (
 	"github.com/Jeiwan/tinybit/protocol"
 )
 
-// TransactionID is transaction hash.
-type TransactionID string
-
 // Mempool represents mempool.
-type Mempool map[TransactionID]*protocol.MsgTx
+type Mempool struct {
+	txs map[string]*protocol.MsgTx
+}
 
 // NewMempool returns a new Mempool.
-func NewMempool() *Mempool { return &Mempool{} }
+func NewMempool() *Mempool {
+	return &Mempool{
+		txs: make(map[string]*protocol.MsgTx),
+	}
+}
 
 // AddTx adds transaction to the mempool.
 func (m Mempool) AddTx(tx *protocol.MsgTx) error {
@@ -23,7 +26,18 @@ func (m Mempool) AddTx(tx *protocol.MsgTx) error {
 	}
 
 	k := hex.EncodeToString(hash)
-	m[TransactionID(k)] = tx
+	m.txs[k] = tx
 
 	return nil
+}
+
+// Mempool ...
+func (n Node) Mempool() map[string]*protocol.MsgTx {
+	m := make(map[string]*protocol.MsgTx)
+
+	for k, v := range n.mempool.txs {
+		m[string(k)] = v
+	}
+
+	return m
 }

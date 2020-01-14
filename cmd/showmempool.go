@@ -1,8 +1,9 @@
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/Jeiwan/tinybit/rpc"
-	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
@@ -20,11 +21,11 @@ var showMempoolCmd = &cobra.Command{
 		defer c.Close()
 
 		var reply string
-		if err := c.Call("RPC.Test", nil, &reply); err != nil {
+		if err := c.Call("RPC.GetMempool", nil, &reply); err != nil {
 			return err
 		}
 
-		logrus.Println(reply)
+		fmt.Println(reply)
 
 		return nil
 	},

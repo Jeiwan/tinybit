@@ -33,7 +33,7 @@ var tinybitCmd = &cobra.Command{
 			return err
 		}
 
-		rpc, err := rpc.NewServer(jsonrpcPort)
+		rpc, err := rpc.NewServer(jsonrpcPort, node)
 		if err != nil {
 			return err
 		}
