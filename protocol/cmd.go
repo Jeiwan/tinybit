@@ -3,6 +3,7 @@ package protocol
 import "github.com/sirupsen/logrus"
 
 const (
+	cmdBlock      = "block"
 	cmdGetData    = "getdata"
 	cmdInv        = "inv"
 	cmdPing       = "ping"
@@ -14,6 +15,7 @@ const (
 )
 
 var commands = map[string][commandLength]byte{
+	cmdBlock:   newCommand(cmdBlock),
 	cmdGetData: newCommand(cmdGetData),
 	cmdInv:     newCommand(cmdInv),
 	cmdPing:    newCommand(cmdPing),
