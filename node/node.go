@@ -138,6 +138,11 @@ Loop:
 				logrus.Errorf("failed to handle 'tx': %+v", err)
 				continue
 			}
+		case "block":
+			if err := no.handleBlock(&msgHeader, conn); err != nil {
+				logrus.Errorf("failed to handle 'block': %+v", err)
+				continue
+			}
 		}
 	}
 
