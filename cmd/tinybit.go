@@ -47,6 +47,8 @@ var tinybitCmd = &cobra.Command{
 
 // Execute ...
 func Execute() {
+	tinybitCmd.AddCommand(showMempoolCmd)
+
 	if err := tinybitCmd.Execute(); err != nil {
 		logrus.Fatalln(err)
 		os.Exit(1)
