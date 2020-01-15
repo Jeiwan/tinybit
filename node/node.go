@@ -81,6 +81,7 @@ func (no Node) Run(nodeAddr string) error {
 	}
 
 	go no.monitorPeers()
+	go no.mempool.Run()
 
 	tmp := make([]byte, protocol.MsgHeaderLength)
 

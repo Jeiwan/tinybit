@@ -18,9 +18,8 @@ func (no Node) handleTx(header *protocol.MessageHeader, conn io.ReadWriter) erro
 
 	logrus.Debugf("transaction: %+v", tx)
 
-	if err := no.mempool.AddTx(&tx); err != nil {
-		logrus.Errorf("failed to add tx to mempool: %+v", err)
-	}
+	// TODO: verify transaction
+	no.mempool.NewTxCh <- tx
 
 	return nil
 }
