@@ -22,11 +22,13 @@ func (no Node) handleBlock(header *protocol.MessageHeader, conn io.ReadWriter) e
 		return fmt.Errorf("block.Hash: %+v", err)
 	}
 
-	logrus.Debugf("block: %+v", hash)
+	logrus.Debugf("block: %x", hash)
 
 	if err := block.Verify(); err != nil {
 		return fmt.Errorf("rejected invalid block %x", hash)
 	}
+
+	no.mempool.NewBlockCh <- block
 
 	return nil
 }
