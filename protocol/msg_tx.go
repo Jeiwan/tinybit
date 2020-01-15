@@ -3,12 +3,15 @@ package protocol
 import (
 	"bytes"
 	"crypto/sha256"
+	"errors"
 	"fmt"
 	"io"
 	"sort"
 
 	"github.com/Jeiwan/tinybit/binary"
 )
+
+var errInvalidTransaction = errors.New("invalid transaction")
 
 // MsgTx represents 'tx' message.
 type MsgTx struct {
@@ -183,6 +186,19 @@ func (tx *MsgTx) UnmarshalBinary(r io.Reader) error {
 
 	if err := d.Decode(&tx.LockTime); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+// Verify returns an error if transaction is invalid.
+func (tx MsgTx) Verify() error {
+	if len(tx.TxIn) == 0 || tx.TxInCount == 0 {
+		return errInvalidTransaction
+	}
+
+	if len(tx.TxOut) == 0 || tx.TxOutCount == 0 {
+		return errInvalidTransaction
 	}
 
 	return nil
