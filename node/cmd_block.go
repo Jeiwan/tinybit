@@ -1,6 +1,7 @@
 package node
 
 import (
+	"fmt"
 	"io"
 
 	"github.com/Jeiwan/tinybit/binary"
@@ -16,7 +17,16 @@ func (no Node) handleBlock(header *protocol.MessageHeader, conn io.ReadWriter) e
 		return err
 	}
 
-	logrus.Debugf("block: %+v", block)
+	hash, err := block.Hash()
+	if err != nil {
+		return fmt.Errorf("block.Hash: %+v", err)
+	}
+
+	logrus.Debugf("block: %+v", hash)
+
+	if err := block.Verify(); err != nil {
+		return fmt.Errorf("rejected invalid block %x", hash)
+	}
 
 	return nil
 }
