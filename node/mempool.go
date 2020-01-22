@@ -52,19 +52,6 @@ func (m Mempool) Run() {
 	}
 }
 
-// AddTx adds transaction to the mempool.
-func (m Mempool) AddTx(tx *protocol.MsgTx) error {
-	hash, err := tx.Hash()
-	if err != nil {
-		return err
-	}
-
-	k := hex.EncodeToString(hash)
-	m.txs[k] = tx
-
-	return nil
-}
-
 // Mempool ...
 func (n Node) Mempool() map[string]*protocol.MsgTx {
 	m := make(map[string]*protocol.MsgTx)
