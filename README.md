@@ -7,6 +7,7 @@ Implementation is explained in a series of blog posts:
 1. [Programming Bitcoin Network](https://jeiwan.net/posts/programming-bitcoin-network/)
 1. [Programming Bitcoin Network, part 2](https://jeiwan.net/posts/programming-bitcoin-network-2/)
 1. [Programming Bitcoin Network, part 3](https://jeiwan.net/posts/programming-bitcoin-network-3/)
+1. [Programming Bitcoin Network, part 4](https://jeiwan.net/posts/programming-bitcoin-network-4/)
 
 ### Running
 1. Install [btcd](https://github.com/btcsuite/btcd).
@@ -23,3 +24,5 @@ Implementation is explained in a series of blog posts:
 1. 'tx'
 1. 'getdata'
 1. 'ping', 'pong'
+1. 'block'
+1. very basic mempool
