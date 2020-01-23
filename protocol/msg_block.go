@@ -27,6 +27,22 @@ type MsgBlock struct {
 
 // Hash calculates and returns block hash.
 func (blck MsgBlock) Hash() ([]byte, error) {
+	raw, err := blck.MarshalHeader()
+	if err != nil {
+		return nil, err
+	}
+
+	hash := sha256.Sum256(raw)
+	hash = sha256.Sum256(hash[:])
+	blockHash := hash[:]
+
+	sort.SliceStable(blockHash, func(i, j int) bool { return true })
+
+	return blockHash, nil
+}
+
+// MarshalHeader returns serialized block header.
+func (blck *MsgBlock) MarshalHeader() ([]byte, error) {
 	buf := bytes.NewBuffer([]byte{})
 
 	b, err := binary.Marshal(blck.Version)
@@ -77,13 +93,7 @@ func (blck MsgBlock) Hash() ([]byte, error) {
 		return nil, err
 	}
 
-	hash := sha256.Sum256(buf.Bytes())
-	hash = sha256.Sum256(hash[:])
-	blockHash := hash[:]
-
-	sort.SliceStable(blockHash, func(i, j int) bool { return true })
-
-	return blockHash, nil
+	return buf.Bytes(), nil
 }
 
 // UnmarshalBinary implements binary.Unmarshaler
