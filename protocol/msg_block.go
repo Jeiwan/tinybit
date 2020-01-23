@@ -136,10 +136,11 @@ func (blck MsgBlock) unpackBits() []byte {
 	copy(bits, blck.Bits[:])
 	sort.SliceStable(bits, func(i, j int) bool { return true })
 
-	target := make([]byte, bits[0])
-	target[0] = bits[1]
-	target[1] = bits[2]
-	target[2] = bits[3]
+	target := make([]byte, 32)
+	i := 32 - bits[0]
+	target[i] = bits[1]
+	target[i+1] = bits[2]
+	target[i+2] = bits[3]
 
 	return target
 }
